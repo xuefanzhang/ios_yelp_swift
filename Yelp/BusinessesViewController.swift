@@ -8,19 +8,23 @@
 
 import UIKit
 
-class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
+class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate {
 
     var businesses: [Business]!
     
     @IBOutlet weak var tableView: UITableView!
+    lazy var searchBar:UISearchBar = UISearchBar(frame: CGRectMake(0, 0, 100, 20))
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.titleView = searchBar
         
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
+        
+        searchBar.delegate = self
         
 
 //        Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
@@ -63,6 +67,19 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         
         return cell
         
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        let searchText = searchBar.text
+        
+        Business.searchWithTerm(searchText!, sort: .Distance, categories: nil, deals: nil) { (businesses: [Business]!, error: NSError!) -> Void in
+            self.businesses = businesses
+            self.tableView.reloadData()
+            for business in businesses {
+                print(business.name!)
+                print(business.address!)
+            }
+        }
     }
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
