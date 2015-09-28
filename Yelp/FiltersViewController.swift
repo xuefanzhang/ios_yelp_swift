@@ -74,13 +74,11 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             filters["categories"] = selectedCategories
         }
         
-        
         delegate?.filtersViewController?(self, didUpdateFilters: filters)
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sections[section].1.count
-        //return categories.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -89,7 +87,6 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         cell.delegate = self
         var state = switchStates[indexPath.section]?[indexPath.row]
         cell.onSwitch.on = state ?? false
-        
         
         return cell
     }
