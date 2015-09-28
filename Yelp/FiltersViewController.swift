@@ -21,6 +21,9 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     var categories: [[String:String]]!
     var switchStates = [Int:[Int:Bool]]()
     
+    var selectedRadius = 0
+    var selectedSort = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -29,7 +32,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         for category in categories {
             categoryNames.append(category["name"]!)
         }
-        sections = [("Deal", ["Offering a Deal"]), ("Categories", categoryNames)]
+        sections = [("Deal", ["Offering a Deal"]), ("Radius in Miles", ["5", "3", "1"]), ("Sort", ["Best Match", "Distance", "Highest Rated"]), ("Categories", categoryNames)]
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -62,7 +65,7 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
                 if value {
                     if (sectionNum == 0){   //deal
                         filters["deals"] = value
-                    } else if (sectionNum == 1) {   //categories
+                    } else if (sectionNum == 3) {   //categories
                         selectedCategories.append(categories[rowNum]["code"]!)
                     }
                 }
@@ -74,6 +77,9 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
             filters["categories"] = selectedCategories
         }
         
+        filters["radius"] = Int(sections[1].1[selectedRadius])
+        filters["sort"] = selectedSort
+        
         delegate?.filtersViewController?(self, didUpdateFilters: filters)
     }
     
@@ -82,13 +88,37 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-        cell.switchLabel.text = sections[indexPath.section].1[indexPath.row]
-        cell.delegate = self
-        var state = switchStates[indexPath.section]?[indexPath.row]
-        cell.onSwitch.on = state ?? false
+        if (indexPath.section == 0 || indexPath.section == 3){
+            let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            cell.switchLabel.text = sections[indexPath.section].1[indexPath.row]
+            cell.delegate = self
+            var state = switchStates[indexPath.section]?[indexPath.row]
+            cell.onSwitch.on = state ?? false
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCellWithIdentifier("PickerCell", forIndexPath: indexPath) as! PickerCell
+            cell.pickLabel.text = sections[indexPath.section].1[indexPath.row]
+            
+            if tableView.numberOfRowsInSection(indexPath.section) == 1 {
+                cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+            }else {
+                if (indexPath.section == 1){
+                    if (indexPath.row == selectedRadius){
+                        cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+                    } else {
+                        cell.accessoryType = UITableViewCellAccessoryType.None
+                    }
+                } else if (indexPath.section == 2){
+                    if (indexPath.row == selectedSort){
+                        cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+                    } else {
+                        cell.accessoryType = UITableViewCellAccessoryType.None
+                    }
+                }
+            }
+            return cell
+        }
         
-        return cell
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -98,6 +128,16 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
         switchStates[indexPath.section] = [indexPath.row:value]
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath){
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        if indexPath.section == 1 {
+            selectedRadius = indexPath.row
+        } else if indexPath.section == 2 {
+            selectedSort = indexPath.row
+        }
+        tableView.reloadSections(NSIndexSet(index: indexPath.section), withRowAnimation: UITableViewRowAnimation.Fade)
     }
     
     func yelpCategories() -> [[String:String]] {

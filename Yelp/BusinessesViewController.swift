@@ -36,7 +36,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
 //            }
 //        })
         
-        Business.searchWithTerm("Restaurants", sort: .Distance, categories: nil, deals: nil) { (businesses: [Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm("Restaurants", sort: .Distance, categories: nil, deals: nil, radius: nil) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
             for business in businesses {
@@ -72,7 +72,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         let searchText = searchBar.text
         
-        Business.searchWithTerm(searchText!, sort: .Distance, categories: nil, deals: nil) { (businesses: [Business]!, error: NSError!) -> Void in
+        Business.searchWithTerm(searchText!, sort: .Distance, categories: nil, deals: nil, radius: nil) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
             for business in businesses {
@@ -91,10 +91,16 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String:AnyObject]){
         
-        var categories = filters["categories"] as? [String]
-        var dealOn = filters["deals"] as? Bool
+        let categories = filters["categories"] as? [String]
+        let dealOn = filters["deals"] as? Bool
+        let sort = filters["sort"] as? Int
+        var radius = filters["radius"] as? Int
         
-        Business.searchWithTerm("Restaurants", sort: nil, categories: categories, deals: dealOn) {
+        if radius != nil {
+            radius = radius! * 1600
+        }
+        
+        Business.searchWithTerm("Restaurants", sort: YelpSortMode(rawValue: sort!), categories: categories, deals: dealOn, radius: radius ) {
             (businesses:[Business]!, error:NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()

@@ -19,6 +19,7 @@
 		DA0CF6FA1BB4873B00A182D6 /* BusinessCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA0CF6F91BB4873B00A182D6 /* BusinessCell.swift */; settings = {ASSET_TAGS = (); }; };
 		DA4793D61BB78925009FE968 /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4793D51BB78925009FE968 /* SwitchCell.swift */; settings = {ASSET_TAGS = (); }; };
 		DA4793D81BB78C8D009FE968 /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA4793D71BB78C8D009FE968 /* FiltersViewController.swift */; settings = {ASSET_TAGS = (); }; };
+		DAFD323F1BB92535001A4BC4 /* PickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAFD323E1BB92535001A4BC4 /* PickerCell.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 		DA0CF6F91BB4873B00A182D6 /* BusinessCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BusinessCell.swift; sourceTree = "<group>"; };
 		DA4793D51BB78925009FE968 /* SwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCell.swift; sourceTree = "<group>"; };
 		DA4793D71BB78C8D009FE968 /* FiltersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
+		DAFD323E1BB92535001A4BC4 /* PickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PickerCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +174,7 @@
 			children = (
 				DA0CF6F91BB4873B00A182D6 /* BusinessCell.swift */,
 				DA4793D51BB78925009FE968 /* SwitchCell.swift */,
+				DAFD323E1BB92535001A4BC4 /* PickerCell.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DA0CF6FA1BB4873B00A182D6 /* BusinessCell.swift in Sources */,
+				DAFD323F1BB92535001A4BC4 /* PickerCell.swift in Sources */,
 				22AAAA9C1AEA1EC300A544AF /* BusinessesViewController.swift in Sources */,
 				DA4793D81BB78C8D009FE968 /* FiltersViewController.swift in Sources */,
 				22AAAA991AEA0A9700A544AF /* Business.swift in Sources */,
