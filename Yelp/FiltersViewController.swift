@@ -17,18 +17,30 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
     @IBOutlet weak var tableView: UITableView!
     weak var delegate: FiltersViewControllerDelegate?
     
+    var sections = [("Deal", ["Offering a Deal"]), ("Categories", ["hi","bye"])]
     var categories: [[String:String]]!
-    var switchStates = [Int:Bool]()
+    var switchStates = [Int:[Int:Bool]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         categories = yelpCategories()
+        var categoryNames = [String]()
+        for category in categories {
+            categoryNames.append(category["name"]!)
+        }
+        sections = [("Deal", ["Offering a Deal"]), ("Categories", categoryNames)]
         
         tableView.delegate = self
         tableView.dataSource = self
+        //tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: CellIdentifier)
+        //tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: SwitchCell)
     }
 
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return sections.count
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -42,36 +54,53 @@ class FiltersViewController: UIViewController, UITableViewDataSource, UITableVie
         dismissViewControllerAnimated(true, completion: nil)
         
         var filters = [String:AnyObject]()
+        
         var selectedCategories = [String]()
         
-        for (row, isSelected) in switchStates {
-            if isSelected {
-                selectedCategories.append(categories[row]["code"]!)
+        for (sectionNum, dict) in switchStates {
+            for (rowNum, value) in dict{
+                if value {
+                    if (sectionNum == 0){   //deal
+                        filters["deals"] = value
+                    } else if (sectionNum == 1) {   //categories
+                        selectedCategories.append(categories[rowNum]["code"]!)
+                    }
+                }
             }
+            
         }
+        
         if selectedCategories.count > 0 {
             filters["categories"] = selectedCategories
         }
+        
+        
         delegate?.filtersViewController?(self, didUpdateFilters: filters)
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return sections[section].1.count
+        //return categories.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-        cell.switchLabel.text = categories[indexPath.row]["name"]
+        cell.switchLabel.text = sections[indexPath.section].1[indexPath.row]
         cell.delegate = self
-
-        cell.onSwitch.on = switchStates[indexPath.row] ?? false
+        var state = switchStates[indexPath.section]?[indexPath.row]
+        cell.onSwitch.on = state ?? false
+        
         
         return cell
     }
     
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section].0
+    }
+    
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
-        switchStates[indexPath.row] = value
+        switchStates[indexPath.section] = [indexPath.row:value]
     }
     
     func yelpCategories() -> [[String:String]] {
