@@ -26,16 +26,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         
         searchBar.delegate = self
         
-
-//        Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
-//            self.businesses = businesses
-//            
-//            for business in businesses {
-//                println(business.name!)
-//                println(business.address!)
-//            }
-//        })
-        
         Business.searchWithTerm("Restaurants", sort: .Distance, categories: nil, deals: nil, radius: nil) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
@@ -48,7 +38,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection secion: Int) -> Int {
@@ -97,7 +86,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
         var radius = filters["radius"] as? Int
         
         if radius != nil {
-            radius = radius! * 1600
+            radius = radius! * 1600     //convert from mile to meter before passing to API
         }
         
         Business.searchWithTerm("Restaurants", sort: YelpSortMode(rawValue: sort!), categories: categories, deals: dealOn, radius: radius ) {
